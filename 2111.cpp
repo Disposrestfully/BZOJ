@@ -2,44 +2,20 @@
 #include<cmath>
 #include<cstring>
 #include<algorithm>
-#define read Read<int>
 using namespace std;
-namespace pb_ds{   
-    namespace io{
-        const int MaxBuff=1<<15;
-        const int Output=1<<23;
-        char B[MaxBuff],*S=B,*T=B;
-		#define getc() ((S==T)&&(T=(S=B)+fread(B,1,MaxBuff,stdin),S==T)?0:*S++)
-        char Out[Output],*iter=Out;
-        inline void flush(){
-            fwrite(Out,1,iter-Out,stdout);
-            iter=Out;
-        }
-    }
-    template<class Type> inline Type Read(){
-        using namespace io;
-        register char ch;
-        register Type ans=0; 
-        register bool neg=0;
-        while(ch=getc(),(ch<'0' || ch>'9') && ch!='-');
-        ch=='-'?neg=1:ans=ch-'0';
-        while(ch=getc(),'0'<= ch && ch<='9') ans=ans*10+ch-'0';
-        return neg?-ans:ans;
-    }
-    template<class Type> inline void Print(register Type x,register char ch='\n'){
-        using namespace io;
-        if(!x) *iter++='0';
-        else{
-            if(x<0) *iter++='-',x=-x;
-            static int s[100]; 
-            register int t=0;
-            while(x) s[++t]=x%10,x/=10;
-            while(t) *iter++='0'+s[t--];
-        }
-        *iter++=ch;
-    }
+int read(){
+	int x=0,w=1;
+	char ch=0;
+	while (ch<'0' || ch>'9'){
+		  if (ch=='-') w=-1;
+		  ch=getchar();
+	}
+	while (ch<='9' && ch>='0'){
+		  x=(x<<1)+(x<<3)+ch-'0';
+		  ch=getchar();
+	}
+	return x*w;
 }
-using namespace pb_ds;
 int n,p,l,r,tot;
 int f[1000010];
 int c[1000010],rev[1000010];
@@ -69,6 +45,8 @@ int lucas(int x,int y){
 	return mult(lucas(x/p,y/p),C(x%p,y%p));	
 }
 int main(){
+	freopen("2111.in","r",stdin);
+	freopen("2111.out","w",stdout);
 	n=read();p=read();
 	c[0]=rev[0]=1;
 	for (int i=1;i<=n;++i){

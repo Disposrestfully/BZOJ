@@ -61,21 +61,20 @@ struct ID{
 		return v<x.v;
 	}
 };
-vector<int>s[N];
-map<ID,int>id;
-int n,m,tot,num;
+vector<int>s[N];map<ID,int>id;
+int n,m,tot;
 struct edge{
-	int next,to,w;
+	int nxt,to,w;
 }a[M*12];
-int head[M*6],cnt;
+int head[M*2],cnt;
 inline void add(int u,int v,int w){
 	a[++cnt].to=v;
-	a[cnt].next=head[u];
+	a[cnt].nxt=head[u];
 	head[u]=cnt;
 	a[cnt].w=w;
 }
-ll d[M*6];
-bool flag[M*6];
+ll d[M*2];
+bool flag[M*2];
 priority_queue<pa,vector<pa>,greater<pa> >q;
 inline void dij(int s){
 	for (int i=1;i<=tot;++i){
@@ -89,7 +88,7 @@ inline void dij(int s){
 		q.pop();
 		if(flag[u]) continue;
 		flag[u]=1;
-		for (int e=head[u];e;e=a[e].next){
+		for (int e=head[u];e;e=a[e].nxt){
 			int v=a[e].to;
 			if (d[v]>1ll*d[u]+a[e].w) {
 				d[v]=1ll*d[u]+a[e].w;
@@ -104,35 +103,34 @@ int main(){
 	n=read();m=read();
 	for (int i=1;i<=m;++i){
 		int u=read(),v=read(),w=read();
-		p[++num]=(node){u,v,w};
+		p[i]=(node){u,v,w};
 		s[u].push_back(w);
 		s[v].push_back(w);
 	}			
 	s[1].push_back(0);
+	add(0,1,0);
 	for (int i=1;i<=n;++i){
 		sort(s[i].begin(),s[i].end());
    		s[i].erase(unique(s[i].begin(),s[i].end()),s[i].end());
 		for (int j=0;j<s[i].size();++j){
 			id[(ID){i,s[i][j]}]=++tot;
-			if (i==1 && !j) add(0,tot,0);
 			if (j){
-				add(tot+1,tot-2,0);
-				add(tot-1,tot+2,s[i][j]-s[i][j-1]);
+				add(tot,tot-1,0);
+				add(tot-1,tot,s[i][j]-s[i][j-1]);
 			}
-			add(tot,tot+1,0);add(tot,tot+2,0);
-			tot+=2;
 		}
 	}
 	for (int i=1;i<=m;++i){
 		int u=p[i].u,v=p[i].v,w=p[i].w;
 		u=id[(ID){u,w}];v=id[(ID){v,w}];
-		add(u+1,v,w);add(u+2,v,w);
-		add(v+1,u,w);add(v+2,u,w);
+		add(u,v,w);add(v,u,w);
 	}
 	dij(0);
 	ll ans=inf;
-	for (int i=0;i<s[n].size();++i)
-		ans=min(ans,d[id[(ID){n,s[n][i]}]]);
+	for (int i=0;i<s[n].size();++i){
+		int u=id[(ID){n,s[n][i]}];
+		ans=min(ans,d[u]);	
+	}
 	printf("%lld\n",ans);
 	return 0;
 }
